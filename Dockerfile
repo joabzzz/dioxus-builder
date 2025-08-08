@@ -42,10 +42,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Rustup and the stable Rust toolchain with essential components
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable && \
     . "$HOME/.cargo/env" && \
+    rustup default stable && \
     rustup component add rustfmt clippy rust-src rust-analysis && \
     rustup target add wasm32-unknown-unknown && \
     rustup target add wasm32-wasip1
+
+# Set environment variables for Rust
 ENV PATH="/root/.cargo/bin:${PATH}"
+ENV CARGO_HOME="/root/.cargo"
+ENV RUSTUP_HOME="/root/.rustup"
 
 # Install essential cargo tools for development
 RUN cargo install cargo-audit && \
