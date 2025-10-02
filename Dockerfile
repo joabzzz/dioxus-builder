@@ -37,15 +37,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Development tools
     git \
     cmake \
+    # Cross-compilation tools
+    mingw-w64 \
+    # Additional libraries
+    libsoup-3.0-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Rustup and the stable Rust toolchain with essential components
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable && \
+# Install Rustup and the nightly Rust toolchain with essential components
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain nightly && \
     . "$HOME/.cargo/env" && \
-    rustup default stable && \
+    rustup default nightly && \
     rustup component add rustfmt clippy rust-src rust-analysis && \
     rustup target add wasm32-unknown-unknown && \
-    rustup target add wasm32-wasip1
+    rustup target add wasm32-wasip1 && \
+    rustup target add x86_64-unknown-linux-gnu && \
+    rustup target add x86_64-pc-windows-gnu
 
 # Set environment variables for Rust
 ENV PATH="/root/.cargo/bin:${PATH}"
